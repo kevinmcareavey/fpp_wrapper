@@ -49,3 +49,10 @@ bin
 .project
 target
 
+# Maven files
+dependency-reduced-pom.xml
+
+# Cache files
+*.pddl
+*.ff
+
