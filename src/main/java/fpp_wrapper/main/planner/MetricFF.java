@@ -2,6 +2,7 @@ package fpp_wrapper.main.planner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,11 @@ public class MetricFF extends Planner {
 		process.waitFor();
 		int exitStatus = process.exitValue();
 		if(exitStatus != 0) {
-			System.err.println(process.getErrorStream().toString());
+			// get the error stream of the process and print it
+			InputStream error = process.getErrorStream();
+			for (int i = 0; i < error.available(); i++) {
+			System.out.println("" + error.read());
+			}
 			throw new PlannerException("metric-ff exited with status " + exitStatus);
 		}
 		
