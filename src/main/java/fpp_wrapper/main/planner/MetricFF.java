@@ -34,7 +34,7 @@ public class MetricFF extends Planner {
 		process.waitFor();
 		int exitStatus = process.exitValue();
 		if(exitStatus != 0) {
-			System.err.println(process.getErrorStream());
+			System.err.println(process.getErrorStream().toString());
 			throw new PlannerException("metric-ff exited with status " + exitStatus);
 		}
 		
