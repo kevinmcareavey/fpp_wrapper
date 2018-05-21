@@ -23,6 +23,7 @@ public class MetricFF extends Planner {
 
 	@Override
 	public List<Action> run(String domain, String problem) throws IOException, InterruptedException, PlannerException, UnsolvableException, NameException {
+		System.err.println("run(" + domain + ", " + problem + ")");
 		Process process;
 		if(this.getLocation() == Location.LOCAL) {
 			String[] cmd = {this.getPath(), "-o", domain, "-f", problem, "-s", "0"};
