@@ -41,11 +41,11 @@ public abstract class Planner {
 		BufferedWriter domainWriter = new BufferedWriter(new FileWriter("domain.pddl"));
 		domainWriter.write(domain.toString());
 		domainWriter.close();
-	    
+		
 		BufferedWriter problemWriter = new BufferedWriter(new FileWriter("problem.pddl"));
-	    problemWriter.write(problem.toString());
-	    problemWriter.close();
-	    
+		problemWriter.write(problem.toString());
+		problemWriter.close();
+		
 		return this.run("domain.pddl", "problem.pddl");
 	}
 	

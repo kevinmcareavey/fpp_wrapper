@@ -34,7 +34,7 @@ public class MetricFF extends Planner {
 		process.waitFor();
 		int exitStatus = process.exitValue();
 		if(exitStatus != 0) {
-			throw new PlannerException("metric-ff exited with status " + exitStatus);
+//			throw new PlannerException("metric-ff exited with status " + exitStatus);
 		}
 		
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -43,7 +43,7 @@ public class MetricFF extends Planner {
 	    boolean skip = true;
 	    List<Action> plan = new ArrayList<Action>();
 	    while((line = bufferedReader.readLine()) != null) {
-	    	if(line.contains("problem proven unsolvable")) {
+	    	if(line.contains("problem proven unsolvable") || line.contains("No plan will solve it")) {
 	    		throw new UnsolvableException();
 	    	}
 	    	if(line.contains("time spent:")) {
