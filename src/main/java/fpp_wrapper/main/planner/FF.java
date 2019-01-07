@@ -9,6 +9,7 @@ import java.util.List;
 import fpp_wrapper.exception.PlannerException;
 import fpp_wrapper.main.Action;
 import fpp_wrapper.main.Location;
+import fpp_wrapper.main.Plan;
 import fpp_wrapper.main.Planner;
 import ppddl.exception.NameException;
 import ppddl.main.name.ActionSymbol;
@@ -21,7 +22,7 @@ public class FF extends Planner {
 	}
 	
 	@Override
-	public List<Action> run(String domain, String problem) throws IOException, InterruptedException, PlannerException, NameException {
+	public Plan run(String domain, String problem) throws IOException, InterruptedException, PlannerException, NameException {
 		String[] cmd = {this.getPath(), "-o", domain, "-f", problem};
 		Process process = Runtime.getRuntime().exec(cmd);
 		process.waitFor();
@@ -36,16 +37,16 @@ public class FF extends Planner {
 	    
 	    String line;
 	    boolean skip = true;
-	    List<Action> plan = new ArrayList<Action>();
+	    List<Action> actions = new ArrayList<Action>();
 	    while((line = bufferedReader.readLine()) != null) {
 	    	if(skip) {
 	    		skip = false;
 	    	} else {
-	    		plan.add(this.parseAction(line));
+	    		actions.add(this.parseAction(line));
 	    	}
 	    }
 	    reader.close();
-	    return plan;
+	    return new Plan(actions);
 	}
 	
 	private Action parseAction(String input) throws NameException {

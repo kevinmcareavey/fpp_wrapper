@@ -3,7 +3,6 @@ package fpp_wrapper.main;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import fpp_wrapper.exception.PlannerException;
 import fpp_wrapper.exception.UnsolvableException;
@@ -37,7 +36,7 @@ public abstract class Planner {
 		this.path = path;
 	}
 	
-	public List<Action> run(Domain domain, Problem problem) throws IOException, InterruptedException, PlannerException, UnsolvableException, NameException {
+	public Plan run(Domain domain, Problem problem) throws IOException, InterruptedException, PlannerException, UnsolvableException, NameException {
 		BufferedWriter domainWriter = new BufferedWriter(new FileWriter("domain.pddl"));
 		domainWriter.write(domain.toString());
 		domainWriter.close();
@@ -49,7 +48,7 @@ public abstract class Planner {
 		return this.run("domain.pddl", "problem.pddl");
 	}
 	
-	public abstract List<Action> run(String domain, String problem) throws IOException, InterruptedException, PlannerException, UnsolvableException, NameException;
+	public abstract Plan run(String domain, String problem) throws IOException, InterruptedException, PlannerException, UnsolvableException, NameException;
 
 	@Override
 	public String toString() {

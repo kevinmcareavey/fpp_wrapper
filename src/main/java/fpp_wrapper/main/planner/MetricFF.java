@@ -10,6 +10,7 @@ import fpp_wrapper.exception.PlannerException;
 import fpp_wrapper.exception.UnsolvableException;
 import fpp_wrapper.main.Action;
 import fpp_wrapper.main.Location;
+import fpp_wrapper.main.Plan;
 import fpp_wrapper.main.Planner;
 import ppddl.exception.NameException;
 import ppddl.main.name.ActionSymbol;
@@ -22,7 +23,7 @@ public class MetricFF extends Planner {
 	}
 
 	@Override
-	public List<Action> run(String domain, String problem) throws IOException, InterruptedException, PlannerException, UnsolvableException, NameException {
+	public Plan run(String domain, String problem) throws IOException, InterruptedException, PlannerException, UnsolvableException, NameException {
 		Process process;
 		if(this.getLocation() == Location.LOCAL) {
 			String[] cmd = {this.getPath(), "-o", domain, "-f", problem, "-s", "0"};
@@ -41,7 +42,8 @@ public class MetricFF extends Planner {
 	    
 	    String line;
 	    boolean skip = true;
-	    List<Action> plan = new ArrayList<Action>();
+	    List<Action> actions = new ArrayList<Action>();
+	    double cost = -1;
 	    while((line = bufferedReader.readLine()) != null) {
 	    	if(line.contains("problem proven unsolvable") || line.contains("No plan will solve it")) {
 	    		throw new UnsolvableException();
@@ -49,10 +51,14 @@ public class MetricFF extends Planner {
 	    	if(line.contains("time spent:")) {
 	    		skip = true;
 	    	}
+	    	if(line.contains("plan cost:")) {
+	    		cost = this.parseCost(line);
+	    		skip = true;
+	    	}
 	    	if(!skip) {
 	    		if(!line.trim().isEmpty()) {
 	    			if(line.contains(":")) { // Action lines always contain a colon.
-	    				plan.add(this.parseAction(line));
+	    				actions.add(this.parseAction(line));
 	    			}
 	    		}
 	    	}
@@ -60,7 +66,7 @@ public class MetricFF extends Planner {
 	    		skip = false;
 	    	}
 	    }
-	    return plan; // If plan is empty then goal is trivially solvable.
+	    return new Plan(actions, cost); // If plan is empty then goal is trivially solvable.
 	}
 	
 	private Action parseAction(String input) throws NameException {
@@ -72,6 +78,11 @@ public class MetricFF extends Planner {
 			arguments.add(new Constant(tokens[i].toLowerCase()));
 		}
 		return new Action(actionSymbol, arguments);
+	}
+	
+	private double parseCost(String input) {
+		String[] tokens = input.split(":");
+		return Double.parseDouble(tokens[1].trim());
 	}
 
 }
